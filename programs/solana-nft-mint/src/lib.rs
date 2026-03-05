@@ -28,7 +28,9 @@ pub mod solana_nft_mint {
         collection.current_supply = token_id.checked_add(1).ok_or(NftError::Overflow)?;
 
         let authority_key = collection.authority;
-        let seeds: &[&[u8]] = &[b"collection", authority_key.as_ref(), &[collection.bump]];
+        let collection_key = collection.key();
+        let bump = collection.bump;
+        let seeds: &[&[u8]] = &[b"collection", authority_key.as_ref(), &[bump]];
 
         // Mint one token to the receiver
         token::mint_to(CpiContext::new_with_signer(
@@ -42,7 +44,7 @@ pub mod solana_nft_mint {
         ), 1)?;
 
         let metadata = &mut ctx.accounts.metadata;
-        metadata.collection = collection.key();
+        metadata.collection = collection_key;
         metadata.mint = ctx.accounts.nft_mint.key();
         metadata.token_id = token_id;
         metadata.creator = ctx.accounts.payer.key();
