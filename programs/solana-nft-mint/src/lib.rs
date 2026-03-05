@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, MintTo};
 
-declare_id!("HoNCn3uuMYzQ83i4zjHWhUqEBY9DNEqJfu9vKJF8NQWU");
+declare_id!("FxgTrgwz1fZNi5ypcoEFw9YJKYSMj7EdZemfHJuNU2zL");
 
 #[program]
 pub mod solana_nft_mint {
