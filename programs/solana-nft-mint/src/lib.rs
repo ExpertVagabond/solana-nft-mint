@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Mint, Token, TokenAccount, MintTo};
+use anchor_spl::token_interface::{Mint, TokenInterface, TokenAccount, MintTo, mint_to};
 
 declare_id!("FxgTrgwz1fZNi5ypcoEFw9YJKYSMj7EdZemfHJuNU2zL");
 
@@ -41,7 +41,7 @@ pub mod solana_nft_mint {
         let seeds: &[&[u8]] = &[b"collection", authority_key.as_ref(), &[bump]];
 
         // Mint one token to the receiver
-        token::mint_to(CpiContext::new_with_signer(
+        mint_to(CpiContext::new_with_signer(
             ctx.accounts.token_program.to_account_info(),
             MintTo {
                 mint: ctx.accounts.nft_mint.to_account_info(),
@@ -93,13 +93,13 @@ pub struct MintNft<'info> {
     #[account(mut, seeds = [b"collection", collection.authority.as_ref()], bump = collection.bump)]
     pub collection: Account<'info, Collection>,
     #[account(mut, constraint = nft_mint.decimals == 0, constraint = nft_mint.supply == 0)]
-    pub nft_mint: Account<'info, Mint>,
+    pub nft_mint: InterfaceAccount<'info, Mint>,
     #[account(mut, constraint = nft_token_account.mint == nft_mint.key())]
-    pub nft_token_account: Account<'info, TokenAccount>,
+    pub nft_token_account: InterfaceAccount<'info, TokenAccount>,
     #[account(init, payer = payer, space = 8 + NftMetadata::INIT_SPACE,
         seeds = [b"metadata", collection.key().as_ref(), nft_mint.key().as_ref()], bump)]
     pub metadata: Account<'info, NftMetadata>,
-    pub token_program: Program<'info, Token>,
+    pub token_program: Interface<'info, TokenInterface>,
     pub system_program: Program<'info, System>,
 }
 
