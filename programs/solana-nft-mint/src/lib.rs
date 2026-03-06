@@ -17,6 +17,14 @@ pub mod solana_nft_mint {
         collection.max_supply = max_supply;
         collection.current_supply = 0;
         collection.bump = ctx.bumps.collection;
+
+        emit!(CollectionCreated {
+            collection: collection.key(),
+            authority: collection.authority,
+            name: collection.name.clone(),
+            max_supply: collection.max_supply,
+        });
+
         Ok(())
     }
 
@@ -51,6 +59,14 @@ pub mod solana_nft_mint {
         metadata.uri_hash = uri_hash;
         metadata.created_at = Clock::get()?.unix_timestamp;
         metadata.bump = ctx.bumps.metadata;
+
+        emit!(NftMinted {
+            collection: collection_key,
+            nft: ctx.accounts.nft_mint.key(),
+            authority: ctx.accounts.payer.key(),
+            token_id,
+        });
+
         Ok(())
     }
 
@@ -119,6 +135,22 @@ pub struct NftMetadata {
     pub uri_hash: [u8; 32],
     pub created_at: i64,
     pub bump: u8,
+}
+
+#[event]
+pub struct CollectionCreated {
+    pub collection: Pubkey,
+    pub authority: Pubkey,
+    pub name: String,
+    pub max_supply: u64,
+}
+
+#[event]
+pub struct NftMinted {
+    pub collection: Pubkey,
+    pub nft: Pubkey,
+    pub authority: Pubkey,
+    pub token_id: u64,
 }
 
 #[error_code]
