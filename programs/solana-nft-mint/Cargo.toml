@@ -23,6 +23,7 @@ custom-panic = []
 [dependencies]
 anchor-lang = "0.32.0"
 anchor-spl = "0.32.0"
+solana-nft-gated = { path = "../../../solana-nft-gated/programs/solana-nft-gated", features = ["cpi"] }
 
 
 [lints.rust]
